@@ -15,7 +15,11 @@ if os.path.exists(OUTPUT_FILE):
     with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
         for line in f:
             print("[✔️ 확인함]", line.strip())
-            seen_messages.add(line)
+            found = re.match(text_regex, line)
+            if found:
+                name, content = found[0], found[1]
+                result = f"{name}: {content}"
+                seen_messages.add(result)
 else:
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         pass
@@ -58,7 +62,7 @@ def extract_text_from_pcap(pcap_path):
                 founds = re.findall(text_regex, text)
                 if founds:
                     for (name, content) in founds:
-                        line = f"{name} : {content}"
+                        line = f"{name}: {content}"
                         if line not in seen_messages:
                             seen_messages.add(line)
                             new_messages.append(line)
